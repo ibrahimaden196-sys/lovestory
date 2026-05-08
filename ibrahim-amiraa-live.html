@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ibrahim & Amiraa</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #08090a;
+  --surface: #0e1210;
+  --green-light: #26422A;
+  --vanilla: #F3E5AB;
+  --vanilla-dim: #c8b48a;
+  --flame: #E25822;
+  --flame-light: #EA672D;
+  --border: #1a2e1c;
+  --text-dim: #3a5c42;
+  --text-mid: #5a8060;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { width:100%; min-height:100vh; background:var(--bg); color:var(--vanilla); font-family:'DM Mono',monospace; overflow-x:hidden; }
+body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.55; }
+
+/* WHO */
+#screen-who { min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:40px 20px; text-align:center; }
+.who-title { font-family:'Playfair Display',serif; font-size:clamp(36px,7vw,72px); font-weight:900; color:var(--vanilla); margin-bottom:6px; letter-spacing:-0.02em; line-height:1; }
+.who-amp { color:var(--flame); }
+.who-sub { font-size:9px; letter-spacing:0.4em; color:var(--text-dim); text-transform:uppercase; margin-bottom:52px; }
+.who-options { display:flex; gap:12px; flex-wrap:wrap; justify-content:center; }
+.who-btn { font-family:'DM Mono',monospace; padding:24px 36px; border:1px solid var(--border); background:var(--surface); cursor:pointer; transition:all 0.3s; text-align:center; min-width:160px; }
+.who-btn:hover { border-color:var(--flame); }
+.who-btn .wn { font-family:'Playfair Display',serif; font-size:26px; font-weight:700; color:var(--vanilla); display:block; margin-bottom:4px; }
+.who-btn .wr { font-size:8px; letter-spacing:0.3em; color:var(--text-dim); text-transform:uppercase; }
+.who-btn.ibrahim:hover .wn { color:var(--text-mid); }
+.who-btn.amiraa:hover .wn { color:var(--flame); }
+
+/* APP */
+#app { display:none; min-height:100vh; flex-direction:column; }
+#app.active { display:flex; }
+
+/* Topbar */
+.topbar { position:sticky; top:0; z-index:100; background:rgba(8,9,10,0.95); backdrop-filter:blur(12px); border-bottom:1px solid var(--border); padding:14px 24px; display:flex; justify-content:space-between; align-items:center; }
+.tb-left .tb-tag { font-size:7px; letter-spacing:0.4em; color:var(--flame); text-transform:uppercase; margin-bottom:3px; }
+.tb-left .tb-names { font-family:'Playfair Display',serif; font-size:17px; font-weight:700; color:var(--vanilla); }
+.tb-left .tb-names span { color:var(--flame); }
+.tb-right { text-align:right; }
+.tb-days { font-size:26px; font-weight:300; color:var(--vanilla); line-height:1; }
+.tb-label { font-size:7px; letter-spacing:0.3em; color:var(--text-dim); text-transform:uppercase; margin-top:2px; }
+
+/* Hero */
+.hero { padding:48px 24px 32px; max-width:680px; margin:0 auto; width:100%; text-align:center; }
+.hero-since { font-size:8px; letter-spacing:0.4em; color:var(--text-dim); text-transform:uppercase; margin-bottom:20px; }
+.counter-row { display:flex; justify-content:center; gap:20px; margin-bottom:32px; flex-wrap:wrap; }
+.cu { text-align:center; }
+.cu-num { font-family:'Playfair Display',serif; font-size:clamp(32px,6vw,64px); font-weight:900; line-height:1; background:linear-gradient(180deg,var(--vanilla) 50%,var(--flame)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.cu-lbl { font-size:7px; letter-spacing:0.35em; color:var(--text-dim); text-transform:uppercase; margin-top:3px; }
+.cu-sep { font-family:'Playfair Display',serif; font-size:clamp(32px,6vw,64px); color:var(--border); line-height:1; }
+
+/* Miss you */
+.miss-wrap { margin-bottom:40px; display:flex; flex-direction:column; align-items:center; gap:10px; }
+.miss-btn { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.2em; text-transform:uppercase; background:transparent; color:var(--vanilla); border:1px solid var(--border); padding:16px 44px; cursor:pointer; transition:all 0.3s; position:relative; overflow:hidden; }
+.miss-btn:hover { border-color:var(--flame); }
+.miss-btn.sent { border-color:var(--flame); color:var(--flame); }
+.miss-btn:active { transform:scale(0.97); }
+.miss-count-txt { font-size:8px; letter-spacing:0.2em; color:var(--text-dim); text-transform:uppercase; }
+
+/* Sections */
+.section { max-width:680px; margin:0 auto; padding:0 24px 40px; width:100%; }
+.sec-label { font-size:8px; letter-spacing:0.4em; color:var(--flame); text-transform:uppercase; padding-bottom:12px; border-bottom:1px solid var(--border); margin-bottom:18px; display:flex; justify-content:space-between; }
+
+/* Note */
+.note-box { border:1px solid var(--border); background:var(--surface); padding:22px; position:relative; }
+.note-box::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,var(--flame),transparent); }
+.note-text { font-family:'Playfair Display',serif; font-style:italic; font-size:14px; color:var(--vanilla-dim); line-height:1.8; }
+.note-sig { font-size:7px; letter-spacing:0.3em; color:var(--text-dim); text-transform:uppercase; margin-top:12px; }
+
+/* Stats grid */
+.stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--border); }
+.stat-cell { background:var(--surface); padding:18px 16px; }
+.stat-lbl { font-size:7px; letter-spacing:0.3em; color:var(--text-dim); text-transform:uppercase; margin-bottom:5px; }
+.stat-val { font-family:'Playfair Display',serif; font-size:18px; color:var(--vanilla-dim); }
+.stat-val.flame { color:var(--flame); font-family:'DM Mono',monospace; font-size:22px; font-weight:300; font-style:normal; }
+
+/* Messages wall */
+.wall-compose { display:flex; gap:0; margin-bottom:14px; }
+.wall-input { flex:1; background:var(--surface); border:1px solid var(--border); border-right:none; padding:13px 16px; font-family:'DM Mono',monospace; font-size:12px; color:var(--vanilla); outline:none; caret-color:var(--flame); }
+.wall-input:focus { border-color:var(--text-dim); }
+.wall-input::placeholder { color:var(--text-dim); }
+.wall-send { background:var(--flame); border:none; padding:13px 18px; font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--vanilla); cursor:pointer; transition:background 0.2s; white-space:nowrap; }
+.wall-send:hover { background:var(--flame-light); }
+.wall-msgs { display:flex; flex-direction:column; gap:6px; max-height:340px; overflow-y:auto; }
+.wmsg { padding:11px 14px; background:var(--surface); border:1px solid var(--border); opacity:0; transform:translateY(4px); transition:all 0.35s; }
+.wmsg.show { opacity:1; transform:translateY(0); }
+.wmsg.ibrahim { border-left:2px solid var(--text-mid); }
+.wmsg.amiraa { border-left:2px solid var(--flame); }
+.wmsg-sender { font-size:7px; letter-spacing:0.3em; text-transform:uppercase; margin-bottom:4px; }
+.wmsg.ibrahim .wmsg-sender { color:var(--text-mid); }
+.wmsg.amiraa .wmsg-sender { color:var(--flame); }
+.wmsg-text { font-size:12px; color:var(--vanilla-dim); line-height:1.6; font-weight:300; }
+.wmsg-time { font-size:7px; color:var(--text-dim); margin-top:4px; text-align:right; }
+.wall-empty { font-size:10px; color:var(--text-dim); text-align:center; padding:24px; letter-spacing:0.15em; }
+
+/* Next date */
+.next-section { text-align:center; padding:32px 24px 56px; max-width:680px; margin:0 auto; width:100%; }
+.next-lbl { font-size:8px; letter-spacing:0.4em; color:var(--text-dim); text-transform:uppercase; margin-bottom:16px; }
+.next-row { display:flex; gap:0; max-width:320px; margin:0 auto 20px; }
+.next-input { flex:1; background:var(--surface); border:1px solid var(--border); border-right:none; padding:13px 16px; font-family:'DM Mono',monospace; font-size:12px; color:var(--vanilla); outline:none; caret-color:var(--flame); }
+.next-input:focus { border-color:var(--text-dim); }
+.next-set { background:transparent; border:1px solid var(--border); padding:13px 18px; font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--text-dim); cursor:pointer; transition:all 0.2s; }
+.next-set:hover { border-color:var(--flame); color:var(--vanilla); }
+.next-num { font-family:'Playfair Display',serif; font-size:clamp(48px,10vw,96px); font-weight:900; color:var(--vanilla); line-height:1; margin-bottom:6px; }
+.next-num span { color:var(--flame); }
+.next-sub { font-size:9px; letter-spacing:0.3em; color:var(--text-dim); text-transform:uppercase; }
+
+/* Toast */
+.toast { position:fixed; top:72px; left:50%; transform:translateX(-50%) translateY(-12px); background:var(--surface); border:1px solid var(--flame); padding:14px 22px; z-index:500; opacity:0; transition:all 0.4s; text-align:center; max-width:300px; width:90%; pointer-events:none; }
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+.toast-msg { font-size:12px; color:var(--vanilla); line-height:1.5; }
+.toast-from { font-size:7px; letter-spacing:0.3em; color:var(--flame); text-transform:uppercase; margin-top:5px; }
+
+/* Miss pulse animation */
+@keyframes missRing { 0%{transform:translate(-50%,-50%) scale(1);opacity:0.6} 100%{transform:translate(-50%,-50%) scale(2.5);opacity:0} }
+.miss-ring { position:fixed; width:60px; height:60px; border:1px solid var(--flame); border-radius:50%; pointer-events:none; animation:missRing 0.8s ease-out forwards; z-index:200; }
+
+/* Footer */
+.footer { text-align:center; padding:28px; border-top:1px solid var(--border); margin-top:auto; }
+.footer-txt { font-size:7px; letter-spacing:0.3em; color:#1a2e1c; text-transform:uppercase; }
+
+::-webkit-scrollbar { width:3px; }
+::-webkit-scrollbar-track { background:var(--bg); }
+::-webkit-scrollbar-thumb { background:var(--border); }
+</style>
+</head>
+<body>
+
+<!-- WHO -->
+<div id="screen-who">
+  <div class="who-title">Ibrahim <span class="who-amp">&</span> Amiraa</div>
+  <div class="who-sub">who's opening this?</div>
+  <div class="who-options">
+    <button class="who-btn ibrahim" onclick="enter('ibrahim')">
+      <span class="wn">Ibrahim</span>
+      <span class="wr">her person</span>
+    </button>
+    <button class="who-btn amiraa" onclick="enter('amiraa')">
+      <span class="wn">Amiraa</span>
+      <span class="wr">his person</span>
+    </button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="topbar">
+    <div class="tb-left">
+      <div class="tb-tag">tenthirty — since 1 July 2022</div>
+      <div class="tb-names">Ibrahim <span>&</span> Amiraa</div>
+    </div>
+    <div class="tb-right">
+      <div class="tb-days" id="tb-days">—</div>
+      <div class="tb-label">days together</div>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-since">Together since 1 July 2022</div>
+    <div class="counter-row">
+      <div class="cu"><div class="cu-num" id="cnt-y">0</div><div class="cu-lbl">Years</div></div>
+      <div class="cu-sep">/</div>
+      <div class="cu"><div class="cu-num" id="cnt-m">0</div><div class="cu-lbl">Months</div></div>
+      <div class="cu-sep">/</div>
+      <div class="cu"><div class="cu-num" id="cnt-d">0</div><div class="cu-lbl">Days</div></div>
+      <div class="cu-sep">/</div>
+      <div class="cu"><div class="cu-num" id="cnt-h">00</div><div class="cu-lbl">Hours</div></div>
+    </div>
+
+    <div class="miss-wrap">
+      <button class="miss-btn" id="miss-btn" onclick="sendMiss()">I miss you</button>
+      <div class="miss-count-txt" id="miss-txt">—</div>
+    </div>
+  </div>
+
+  <!-- Note -->
+  <div class="section">
+    <div class="sec-label"><span id="note-label">A note for you</span></div>
+    <div class="note-box">
+      <div class="note-text" id="note-text">—</div>
+      <div class="note-sig" id="note-sig">—</div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="section">
+    <div class="sec-label"><span>Our numbers</span></div>
+    <div class="stats-grid">
+      <div class="stat-cell"><div class="stat-lbl">We met on</div><div class="stat-val">1 July, 2022</div></div>
+      <div class="stat-cell"><div class="stat-lbl">Days together</div><div class="stat-val flame" id="stat-days">—</div></div>
+      <div class="stat-cell"><div class="stat-lbl">Miss you signals</div><div class="stat-val" id="stat-miss">0</div></div>
+      <div class="stat-cell"><div class="stat-lbl">Messages left</div><div class="stat-val" id="stat-msgs">0</div></div>
+    </div>
+  </div>
+
+  <!-- Wall -->
+  <div class="section">
+    <div class="sec-label"><span>Leave something</span><span style="font-size:7px;color:var(--text-dim)">they'll see it live</span></div>
+    <div class="wall-compose">
+      <input class="wall-input" id="wall-input" placeholder="a thought, a word, anything..." maxlength="160">
+      <button class="wall-send" onclick="sendMsg()">Send</button>
+    </div>
+    <div class="wall-msgs" id="wall-msgs">
+      <div class="wall-empty">loading messages...</div>
+    </div>
+  </div>
+
+  <!-- Next -->
+  <div class="next-section">
+    <div class="next-lbl">Next time together</div>
+    <div class="next-row">
+      <input type="date" class="next-input" id="next-input">
+      <button class="next-set" onclick="setNext()">Set</button>
+    </div>
+    <div class="next-num" id="next-num"><span>—</span></div>
+    <div class="next-sub" id="next-sub">days until next chapter</div>
+  </div>
+
+  <div class="footer"><div class="footer-txt">tenthirty projects — built across distance</div></div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <div class="toast-msg" id="toast-msg">—</div>
+  <div class="toast-from" id="toast-from">—</div>
+</div>
+
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, limit, doc, setDoc, getDoc, increment, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBy4zoNmadKGItLxXYwnUNX-cYVvEPGdp8",
+  authDomain: "ibrahim-amira.firebaseapp.com",
+  projectId: "ibrahim-amira",
+  storageBucket: "ibrahim-amira.firebasestorage.app",
+  messagingSenderId: "854013446566",
+  appId: "1:854013446566:web:3f9e6751d81fbb9720a767"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const START = new Date('2022-07-01T00:00:00');
+let currentUser = null;
+let toastTimer = null;
+let unsubMsgs = null;
+let unsubMiss = null;
+let unsubNext = null;
+
+const NOTES = {
+  ibrahim: { text: "She's thinking about you right now. Probably more than you know. The distance is just geography — it can't touch what you two actually are.", sig: "for Ibrahim, from this page" },
+  amiraa:  { text: "He built this for you. Not because he had to — because you were worth the quiet hours it took. That's the kind of person he is.", sig: "for Amiraa, from this page" }
+};
+
+const MISS_LINES = {
+  ibrahim: ["Ibrahim misses you.", "He's thinking of you right now.", "Ibrahim sent you a signal.", "He wanted you to know.", "From wherever he is — he misses you."],
+  amiraa:  ["Amiraa misses you.", "She's thinking of you right now.", "Amiraa sent you a signal.", "She wanted you to know.", "From wherever she is — she misses you."]
+};
+
+// ── Expose to window ──
+window.enter = function(who) {
+  currentUser = who;
+  document.getElementById('screen-who').style.display = 'none';
+  document.getElementById('app').classList.add('active');
+  init();
+};
+
+window.sendMiss = async function() {
+  const btn = document.getElementById('miss-btn');
+  btn.classList.add('sent');
+  btn.textContent = 'Signal sent ♥';
+  setTimeout(() => { btn.classList.remove('sent'); btn.textContent = 'I miss you'; }, 3000);
+
+  // Ring animation
+  const ring = document.createElement('div');
+  ring.className = 'miss-ring';
+  ring.style.left = (btn.getBoundingClientRect().left + btn.offsetWidth/2) + 'px';
+  ring.style.top = (btn.getBoundingClientRect().top + btn.offsetHeight/2) + 'px';
+  document.body.appendChild(ring);
+  setTimeout(() => ring.remove(), 900);
+
+  // Write to Firestore
+  await setDoc(doc(db, 'signals', 'latest'), {
+    from: currentUser,
+    time: serverTimestamp(),
+    text: MISS_LINES[currentUser][Math.floor(Math.random()*MISS_LINES[currentUser].length)]
+  });
+
+  // Increment total
+  await setDoc(doc(db, 'stats', 'counts'), { missTotal: increment(1) }, { merge: true });
+  showToast('Signal sent. They\'ll feel it.', '♥');
+};
+
+window.sendMsg = async function() {
+  const input = document.getElementById('wall-input');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  await addDoc(collection(db, 'messages'), {
+    from: currentUser,
+    text,
+    time: serverTimestamp()
+  });
+};
+
+window.setNext = async function() {
+  const val = document.getElementById('next-input').value;
+  if (!val) return;
+  await setDoc(doc(db, 'shared', 'nextDate'), { date: val });
+  updateNextDisplay(val);
+};
+
+function init() {
+  // Counter
+  updateCounter();
+  setInterval(updateCounter, 1000);
+
+  // Note
+  const n = NOTES[currentUser];
+  document.getElementById('note-text').textContent = n.text;
+  document.getElementById('note-sig').textContent = n.sig;
+  document.getElementById('note-label').textContent = currentUser === 'ibrahim' ? 'A note for you, Ibrahim' : 'A note for you, Amiraa';
+
+  // Listen to messages
+  const msgsQ = query(collection(db, 'messages'), orderBy('time', 'desc'), limit(30));
+  unsubMsgs = onSnapshot(msgsQ, snap => {
+    renderMsgs(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+    document.getElementById('stat-msgs').textContent = snap.size;
+  });
+
+  // Listen to miss signals
+  unsubMiss = onSnapshot(doc(db, 'signals', 'latest'), snap => {
+    if (!snap.exists()) return;
+    const data = snap.data();
+    if (data.from && data.from !== currentUser) {
+      // Show notification for the other person's signal
+      const age = data.time ? (Date.now() - data.time.toMillis()) : 99999;
+      if (age < 15000) { // only show if sent in last 15s
+        showToast(data.text || MISS_LINES[data.from][0], `♥ from ${data.from === 'ibrahim' ? 'Ibrahim' : 'Amiraa'}`);
+      }
+    }
+  });
+
+  // Listen to stats
+  onSnapshot(doc(db, 'stats', 'counts'), snap => {
+    if (snap.exists()) {
+      const total = snap.data().missTotal || 0;
+      document.getElementById('miss-txt').textContent = total > 0 ? `${total} signal${total!==1?'s':''} sent between you` : 'press when you miss them';
+      document.getElementById('stat-miss').textContent = total;
+    }
+  });
+
+  // Listen to next date
+  unsubNext = onSnapshot(doc(db, 'shared', 'nextDate'), snap => {
+    if (snap.exists()) {
+      const d = snap.data().date;
+      document.getElementById('next-input').value = d;
+      updateNextDisplay(d);
+    }
+  });
+
+  // Enter key
+  document.getElementById('wall-input').addEventListener('keydown', e => { if(e.key==='Enter') window.sendMsg(); });
+}
+
+function renderMsgs(msgs) {
+  const container = document.getElementById('wall-msgs');
+  if (msgs.length === 0) {
+    container.innerHTML = '<div class="wall-empty">nothing yet. leave the first thing.</div>';
+    return;
+  }
+  container.innerHTML = '';
+  msgs.forEach((m, i) => {
+    const el = document.createElement('div');
+    el.className = `wmsg ${m.from || 'unknown'}`;
+    const name = m.from === 'ibrahim' ? 'Ibrahim' : 'Amiraa';
+    const time = m.time ? new Date(m.time.toMillis()).toLocaleDateString('en-GB', {day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) : '—';
+    el.innerHTML = `<div class="wmsg-sender">${name}</div><div class="wmsg-text">${esc(m.text)}</div><div class="wmsg-time">${time}</div>`;
+    container.appendChild(el);
+    setTimeout(() => el.classList.add('show'), i * 40);
+  });
+}
+
+function updateCounter() {
+  const now = new Date();
+  const diff = now - START;
+  const totalDays = Math.floor(diff / 86400000);
+  const years = Math.floor(totalDays / 365);
+  const months = Math.floor((totalDays % 365) / 30);
+  const days = totalDays % 30;
+  document.getElementById('tb-days').textContent = totalDays.toLocaleString();
+  document.getElementById('cnt-y').textContent = years;
+  document.getElementById('cnt-m').textContent = months;
+  document.getElementById('cnt-d').textContent = days;
+  document.getElementById('cnt-h').textContent = String(now.getHours()).padStart(2,'0');
+  document.getElementById('stat-days').textContent = totalDays.toLocaleString();
+}
+
+function updateNextDisplay(dateStr) {
+  const target = new Date(dateStr);
+  const diff = Math.ceil((target - new Date()) / 86400000);
+  const num = document.getElementById('next-num');
+  const sub = document.getElementById('next-sub');
+  if (diff < 0) { num.innerHTML='<span style="font-size:0.5em">that day has passed</span>'; sub.textContent='set a new one'; }
+  else if (diff === 0) { num.innerHTML='<span>today.</span>'; sub.textContent="it's happening"; }
+  else { num.innerHTML=`<span>${diff}</span>`; sub.textContent=`day${diff!==1?'s':''} until next chapter`; }
+}
+
+function showToast(msg, from) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  document.getElementById('toast-from').textContent = from;
+  t.classList.add('show');
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 4500);
+}
+
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+</script>
+</body>
+</html>
